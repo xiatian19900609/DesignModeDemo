@@ -1,1 +1,1 @@
-include ':app', ':NetLibrary', ':MacthModule', ':BaseLibrary'
+include ':app', ':NetLibrary', ':MvvmModule', ':BaseLibrary'
