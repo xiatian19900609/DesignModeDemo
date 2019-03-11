@@ -1,5 +1,9 @@
 package xt.com.baselibrary.data.net
 
+import android.app.Application
+import com.franmontiel.persistentcookiejar.PersistentCookieJar
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,18 +27,20 @@ class RetrofitFactory private constructor() {
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(BaseConstant.SERVER_ADDRESS)
-            .client(initClient())
+            .client(initClient(NetLib.application))
             .build()
     }
 
-    private fun initClient(): OkHttpClient {
+    private fun initClient(application: Application): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(initLogInterceptor())
             .addInterceptor(initCommonHeaderInterceptor())
             .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(10, TimeUnit.SECONDS)
+            .cookieJar(PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(application)))
             .build()
     }
+
 
     /**
      * 通用头信息拦截器
